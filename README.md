@@ -200,6 +200,8 @@ Margins are negative. Sentinel lymph node biopsy is negative (pN0).
 No lymphovascular invasion. Patient is otherwise healthy with no comorbidities.
 ```
 
+### Output
+
 ```text
 Clinical Summary:
 -----------------
