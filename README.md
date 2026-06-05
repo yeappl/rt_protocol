@@ -178,6 +178,12 @@ from decision_tree import recommend_radiotherapy
 recommend_radiotherapy(data)
 ```
 
+### Or run from terminal
+```python ./rt_protocol.py
+Enter clinical letter, or press <Enter> to use template letter:
+
+```
+
 ---
 
 ## Example Output
