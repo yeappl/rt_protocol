@@ -188,7 +188,7 @@ Enter clinical letter, or press <Enter> to use template letter:
 
 ---
 
-## Example Output
+## Example Use
 
 ### Template letter
 
