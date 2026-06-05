@@ -161,7 +161,7 @@ pip install uvicorn
 ### Extract Structured Data
 
 ```python
-from extractor import extract_structured_data
+from rt_protocol import extract_structured_data
 
 letter = open("clinic_letter.txt").read()
 
@@ -173,7 +173,7 @@ print(data)
 ### Run Decision Engine
 
 ```python
-from decision_tree import recommend_radiotherapy
+from rt_protocol import recommend_radiotherapy
 
 recommend_radiotherapy(data)
 ```
