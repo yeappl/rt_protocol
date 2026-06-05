@@ -180,6 +180,7 @@ recommend_radiotherapy(data)
 
 ### Or run from terminal
 ```console
+cd /PATH/TO/FILE
 python ./rt_protocol.py
 Enter clinical letter, or press <Enter> to use template letter:
 
