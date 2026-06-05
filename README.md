@@ -190,33 +190,55 @@ Enter clinical letter, or press <Enter> to use template letter:
 
 ## Example Output
 
+### Template letter
+
 ```text
-Clinical Summary
-----------------
+Patient is a 62-year-old female with left breast cancer. 
+She underwent lumpectomy surgery for a 1.8 cm tumor. 
+Pathology shows Grade 2 invasive ductal carcinoma, ER positive, PR positive, HER2 negative. 
+Margins are negative. Sentinel lymph node biopsy is negative (pN0). 
+No lymphovascular invasion. Patient is otherwise healthy with no comorbidities.
+```
+
+```text
+Clinical Summary:
+-----------------
 Age: 62
+Disease site: left breast
+Laterality: left
 Tumour size: 1.8 cm
 Grade: 2
 ER+: True
 PR+: True
 HER2+: False
-Nodal status: N0
+Nodal status: None
+Surgery type: lumpectomy
+Margins positive: False
+LVI present: False
+DCIS present: False
+Immunosuppression: None
+Multicentric: None
+Histology: Grade 2 invasive ductal carcinoma
 
-Recommended Technique
----------------------
+Recommended Technique:
+----------------------
 Partial Breast Irradiation (PBI)
 
-Fractionation
--------------
-PTV_High: 320 cGy × 15 fractions
-PTV_Low : 267 cGy × 15 fractions
+Fractionation:
+--------------
+        Standard Prescription (UNC):
+            - 600 cGy x 5 = 3000 cGy - QOD (every other day preferred/standard) (daily also acceptable but consider OPAR for daily)
 
-Rationale
----------
-- Small low-risk tumour
-- Node negative
-- ER positive
-- No lymphovascular invasion
-- Clear surgical margins
+        Also allowable:
+            - 550 cGy x 5 = 2750 cGy - daily (OPAR) 
+            - 270 cGy x 15 = 4050 cGy - daily (Import Low) 
+
+Rationale:
+----------
+-  PBI is preferred over whole breast RT for most patients with early stage breast cancer who are considered candidates according to the ASTRO PBI guideline (Grade 1-2, ER-positive histology, age ≥40 years, tumor size ≤2 cm, pN0), recognizing whole breast RT may be appropriate at MD discretion and through shared decision-making. 
+- PBI can be considered for other cases per ASTRO guideline and MD discretion. In patients over 65 who are cN0, PBI is appropriate when SLNB is omitted.  In patients 50-65 who do not have SLNB, most patients should have whole breast RT and PBI can be considered on a case-by-case basis. 
+
+--------------------------------------------------
 ```
 
 ---
