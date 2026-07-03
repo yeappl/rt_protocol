@@ -1,6 +1,7 @@
 import ollama 
 import json
 from pydantic import BaseModel
+import gradio as gr
 from typing import Optional, Union
 
 class OncologyLetter(BaseModel):
@@ -22,20 +23,47 @@ class OncologyLetter(BaseModel):
     long_distance: Optional[str]
     histology: Optional[Union[str, dict]]
 
+# SYSTEM_PROMPT = """
+# You are a medical information extraction system.
+
+# Extract structured data from clinical letters. 
+
+# Return ONLY valid JSON.
+# Do not include explanations.
+# If a field is not found, return null.
+
+# Side refers to left or right sided and cannot be None. 
+# Age or patient_age may be given as <age>-year-old.  
+
+# Use centimetres (cm) for tumour size.
+# Convert mm to cm if necessary. 
+# """
+
 SYSTEM_PROMPT = """
-You are a medical information extraction system.
-
-Extract structured data from clinical letters. 
-
-Return ONLY valid JSON.
-Do not include explanations.
-If a field is not found, return null.
-
-Side refers to left or right sided and cannot be None. 
-Age or patient_age may be given as <age>-year-old.  
-
-Use centimetres (cm) for tumour size.
-Convert mm to cm if necessary. 
+You are a medical information extraction system specialised in oncology letters.
+Extract structured data and return ONLY a valid JSON object. No explanations, no markdown, no code fences.
+EXTRACTION RULES:
+patient_age: Extract from phrases like "X-year-old", "age X", "aged X", "DOB" (calculate if today's date given).
+disease_site: Extract anatomical site e.g. "breast", "lung", "prostate". Never null if letter mentions a tumour.
+side: Extract "left" or "right". Look for "left", "right", "L ", "R ", "left-sided", "right-sided", "left breast", "right breast". Never return null — if truly absent return "not specified".
+tumour_size_cm: Convert all sizes to cm. 10mm = 1.0, 25mm = 2.5, 0.5cm = 0.5. Look for "tumour", "lesion", "mass", "measuring", "size".
+grade: Extract 1, 2, or 3 from "grade 1/2/3", "G1/G2/G3", "well/moderately/poorly differentiated" (1/2/3 respectively).
+er_positive: true if "ER+", "ER positive", "oestrogen receptor positive". false if "ER-", "ER negative". Look in pathology/histology sections.
+pr_positive: true if "PR+", "PR positive", "progesterone receptor positive". false if "PR-", "PR negative".
+her2_positive: true if "HER2+", "HER2 positive", "HER2 3+", "HER2 amplified". false if "HER2-", "HER2 negative", "HER2 1+", "HER2 2+ not amplified".
+nodal_status: Extract as string e.g. "N0", "node negative", "1/3 nodes positive", "sentinel node negative". Never null if nodal information present.
+surgery_type: Look for "mastectomy", "wide local excision", "WLE", "lumpectomy", "wide excision", "segmentectomy", "axillary node clearance", "sentinel lymph node biopsy", "SLNB". Combine if multiple e.g. "WLE and SLNB".
+margins_positive: true if "positive margins", "involved margins", "margins not clear", "R1". false if "clear margins", "negative margins", "margins clear", "R0".
+lymphovascular_invasion: true if "LVI present", "lymphovascular invasion present/seen/identified". false if "LVI absent", "no lymphovascular invasion", "LVI not seen".
+ductal_carcinoma_in_situ_present: true if "DCIS", "ductal carcinoma in situ" mentioned. false if explicitly stated absent.
+multicentric: Extract as string. Look for "multicentric", "multifocal", "multiple foci". Return "yes", "no", or describe if present.
+immunosuppression: Extract as string. Look for immunosuppressive drugs, transplant history, HIV, long-term steroids. Return "yes" with details or "no" if not mentioned.
+long_distance: Extract as string. Look for travel distance, rurality, patient living far from treatment centre. Return "yes" with details or "no" if not mentioned.
+histology: Extract full histological type e.g. "invasive ductal carcinoma", "invasive lobular carcinoma", "IDC", "ILC". Include grade if embedded in histology description.
+IMPORTANT:
+- Infer where clinically reasonable (e.g. "poorly differentiated" = grade 3)
+- Never leave side null — use "not specified" as fallback
+- Return ONLY the JSON object, nothing else
 """
 
 def build_prompt(letter: str):
@@ -70,7 +98,8 @@ Clinical letter:
 
 def extract_structured_data(letter: str):
     response = ollama.chat(
-        model="llama3.2:1b",
+        # model="llama3.2:1b",
+        model="qwen2.5:3b",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": build_prompt(letter)}
